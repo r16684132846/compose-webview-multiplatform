@@ -1,0 +1,17 @@
+[
+  {
+    "moduleId": "org.jetbrains.kotlinx:atomicfu:0.23.2-KBA-001",
+    "file": "D:\\Third-party_Library\\compose-webview-multiplatform\\.kotlin\\metadata\\kotlinTransformedCInteropMetadataLibraries\\org.jetbrains.kotlinx-atomicfu-0.23.2-KBA-001-noOhosMain-cinterop\\org.jetbrains.kotlinx_atomicfu-cinterop-interop-RJQB-A.klib",
+    "sourceSetName": "noOhosMain"
+  },
+  {
+    "moduleId": "org.jetbrains.skiko:skiko:0.7.97-KBA-002",
+    "file": "D:\\Third-party_Library\\compose-webview-multiplatform\\.kotlin\\metadata\\kotlinTransformedCInteropMetadataLibraries\\org.jetbrains.skiko-skiko-0.7.97-KBA-002-iosMain-cinterop\\org.jetbrains.skiko_skiko-cinterop-uikit-OLJC0Q.klib",
+    "sourceSetName": "iosMain"
+  },
+  {
+    "moduleId": "org.jetbrains.compose.ui:ui-uikit:1.6.1-KBA-007",
+    "file": "D:\\Third-party_Library\\compose-webview-multiplatform\\.kotlin\\metadata\\kotlinTransformedCInteropMetadataLibraries\\org.jetbrains.compose.ui-ui-uikit-1.6.1-KBA-007-uikitMain-cinterop\\org.jetbrains.compose.ui_ui-uikit-cinterop-utils-DDKa6g.klib",
+    "sourceSetName": "uikitMain"
+  }
+]
