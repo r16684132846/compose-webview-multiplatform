@@ -24,6 +24,13 @@ pluginManagement {
                 password = "notekmp1504"
             }
         }
+        // 添加OHOS插件仓库
+        maven {
+            setUrl("https://repo.huaweicloud.com/repository/maven/")
+        }
+        maven {
+            setUrl("https://mirrors.huaweicloud.com/repository/maven/")
+        }
     }
 
     plugins {
@@ -32,11 +39,10 @@ pluginManagement {
         val composeVersion = extra["compose.version"] as String
 
         kotlin("jvm").version(kotlinVersion)
-        kotlin("multiplatform").version(kotlinVersion)
+//        kotlin("multiplatform").version(kotlinVersion)
         kotlin("plugin.serialization").version(kotlinVersion)
         kotlin("android").version(kotlinVersion)
 
-        // 添加新的 Compose 编译器插件
         id("org.jetbrains.kotlin.plugin.compose").version(kotlinVersion)
 
         id("com.android.application").version(agpVersion)
@@ -44,6 +50,10 @@ pluginManagement {
 
         id("org.jetbrains.compose").version(composeVersion)
         id("org.jetbrains.dokka").version("1.9.0")
+
+        // 添加OHOS插件
+        id("org.jetbrains.kotlin.native.cocoapods").version(kotlinVersion)
+        id("org.jetbrains.kotlin.multiplatform").version(kotlinVersion)
     }
 }
 
@@ -65,6 +75,13 @@ dependencyResolutionManagement {
                 username = "kmp2"
                 password = "notekmp1504"
             }
+        }
+        // 添加OHOS依赖仓库
+        maven {
+            setUrl("https://repo.huaweicloud.com/repository/maven/")
+        }
+        maven {
+            setUrl("https://mirrors.huaweicloud.com/repository/maven/")
         }
     }
 }

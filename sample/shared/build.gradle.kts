@@ -20,7 +20,17 @@ kotlin {
         }
     }
 
-    jvm("desktop")
+//    jvm("desktop")
+
+    // 添加OHOS支持
+    listOf(
+        ohosX64(),
+        ohosArm64(),
+    ).forEach { ohosTarget ->
+        ohosTarget.binaries.sharedLib {
+            baseName = "shared"
+        }
+    }
 
 //    listOf(
 //        iosX64(),
@@ -60,16 +70,35 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
             }
         }
-        val desktopMain by getting {
-            dependencies {
-                implementation(compose.desktop.common)
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
-            }
-        }
+//        val desktopMain by getting {
+//            dependencies {
+//                implementation(compose.desktop.common)
+//                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
+//            }
+//        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
             }
+        }
+
+        // 添加OHOS源集
+        val ohosMain by creating {
+            dependsOn(commonMain)
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-ohos:$coroutinesVersion")
+            }
+        }
+
+        val ohosTest by creating {
+            dependsOn(commonTest)
+        }
+
+        val ohosX64Main by getting {
+            dependsOn(ohosMain)
+        }
+        val ohosArm64Main by getting {
+            dependsOn(ohosMain)
         }
     }
 }

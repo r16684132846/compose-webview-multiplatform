@@ -10,7 +10,8 @@ plugins {
     id("com.vanniktech.maven.publish") version "0.25.3" apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
     id("org.jetbrains.kotlin.plugin.atomicfu") version "1.9.20"
-    id("org.jetbrains.kotlin.plugin.compose")version "2.0.21-KBA-006"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21-KBA-006"
+    id("org.jetbrains.kotlin.native.cocoapods").version("2.0.21-KBA-006").apply(false)
 }
 
 

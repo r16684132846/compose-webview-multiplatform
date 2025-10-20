@@ -1,23 +1,25 @@
-@file:Suppress("UNUSED_VARIABLE", "OPT_IN_USAGE")
-
 plugins {
     kotlin("multiplatform")
-    id("com.android.library")
-    id("org.jetbrains.compose")
-    id("org.jetbrains.dokka")
-    id("com.vanniktech.maven.publish")
     kotlin("plugin.serialization")
+    id("org.jetbrains.compose")version "1.6.1-KBA-007"
+    id("com.android.library")
+    id("org.jetbrains.kotlin.plugin.atomicfu")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.21-KBA-006"
+    id("maven-publish")
+    id("signing")
 }
 
+@OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-//    explicitApi = ExplicitApiMode.Strict
-
 //    targetHierarchy.default()
     applyDefaultHierarchyTemplate()
 
     androidTarget {
-        publishLibraryVariants("release")
+        compilations.all {
+            compileTaskProvider.get().compilerOptions {
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            }
+        }
     }
 
 //    jvm("desktop")
@@ -26,64 +28,90 @@ kotlin {
 //        iosX64(),
 //        iosArm64(),
 //        iosSimulatorArm64(),
-//    ).forEach { iosTarget ->
-//        iosTarget.binaries.framework {
-//            baseName = "webview"
-//            isStatic = true
+//    ).forEach {
+//        it.binaries.framework {
+//            baseName = "shared"
 //        }
-//        iosTarget.setUpiOSObserver()
+//    }
+
+// 添加OHOS支持
+//    listOf(
+//        ohosX64(),
+//        ohosArm64(),
+//    ).forEach { ohosTarget ->
+//        ohosTarget.binaries.sharedLib {
+//            baseName = "webview"
+//        }
 //    }
 
     sourceSets {
         val coroutinesVersion = extra["coroutines.version"] as String
+        val voyagerVersion = "1.0.0-rc10"
+
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
+                implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
-
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation("co.touchlab:kermit:2.0.3")
+                implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
+                implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion")
+                api(project(":webview"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+                implementation("org.jetbrains.kotlinx:atomicfu:0.23.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha03")
             }
         }
         val androidMain by getting {
             dependencies {
                 api("androidx.activity:activity-compose:1.8.2")
-                api("androidx.webkit:webkit:1.10.0")
+                api("androidx.appcompat:appcompat:1.6.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
             }
         }
-//        val iosX64Main by getting
-//        val iosArm64Main by getting
-//        val iosSimulatorArm64Main by getting
-//        val iosMain by getting {
-//            dependsOn(commonMain)
-//            iosX64Main.dependsOn(this)
-//            iosArm64Main.dependsOn(this)
-//            iosSimulatorArm64Main.dependsOn(this)
-//        }
 //        val desktopMain by getting {
 //            dependencies {
 //                implementation(compose.desktop.common)
-//                api("dev.datlag:kcef:2024.01.07.1")
 //                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
 //            }
 //        }
+
+        // 添加OHOS源集
+//        val ohosMain by creating {
+//            dependsOn(commonMain)
+//            dependencies {
+//                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-ohos:$coroutinesVersion")
+//            }
+//        }
+//
+//        val ohosX64Main by getting {
+//            dependsOn(ohosMain)
+//        }
+//        val ohosArm64Main by getting {
+//            dependsOn(ohosMain)
+//        }
+
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
     }
 }
 
 android {
-    compileSdk = (findProperty("android.compileSdk") as String).toInt()
-    namespace = "com.multiplatform.webview"
+    namespace = "com.kevinnzou.sample"
+    compileSdk = 34
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        minSdk = (findProperty("android.minSdk") as String).toInt()
+        minSdk = 21
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -93,23 +121,58 @@ android {
         jvmToolchain(17)
     }
 }
+// 配置发布
+publishing {
+    publications {
+        withType<MavenPublication> {
+            groupId = project.property("GROUP").toString()
+            artifactId = project.property("POM_ARTIFACT_ID").toString()
+            version = project.property("VERSION_NAME").toString()
 
-fun org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget.setUpiOSObserver() {
-    val path = projectDir.resolve("src/nativeInterop/cinterop/observer")
+            pom {
+                name.set(project.property("POM_NAME").toString())
+                description.set(project.property("POM_DESCRIPTION").toString())
+                url.set(project.property("POM_URL").toString())
 
-    binaries.all {
-        linkerOpts("-F $path")
-        linkerOpts("-ObjC")
-    }
+                licenses {
+                    license {
+                        name.set(project.property("POM_LICENCE_NAME").toString())
+                        url.set(project.property("POM_LICENCE_URL").toString())
+                        distribution.set(project.property("POM_LICENCE_DIST").toString())
+                    }
+                }
 
-    compilations.getByName("main") {
-        cinterops.create("observer") {
-            compilerOpts("-F $path")
+                developers {
+                    developer {
+                        id.set(project.property("POM_DEVELOPER_ID").toString())
+                        name.set(project.property("POM_DEVELOPER_NAME").toString())
+                        url.set(project.property("POM_DEVELOPER_URL").toString())
+                    }
+                }
+
+                scm {
+                    url.set(project.property("POM_SCM_URL").toString())
+                    connection.set(project.property("POM_SCM_CONNECTION").toString())
+                    developerConnection.set(project.property("POM_SCM_DEV_CONNECTION").toString())
+                }
+            }
         }
     }
-}
 
-mavenPublishing {
-    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.S01, automaticRelease = true)
-    signAllPublications()
+    repositories {
+        maven {
+            name = "Local"
+            url = uri(layout.buildDirectory.dir("repo"))
+        }
+
+        maven {
+            isAllowInsecureProtocol = true
+            name = "Nenus"
+            url = uri("http://maven.cloud.cicoe.net/repository/kmp/")
+            credentials {
+                username = "kmp2"
+                password = "notekmp1504"
+            }
+        }
+    }
 }
