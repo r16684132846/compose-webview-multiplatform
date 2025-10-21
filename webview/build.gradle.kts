@@ -58,7 +58,6 @@ kotlin {
                 implementation("co.touchlab:kermit:2.0.3")
                 implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
                 implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion")
-                api(project(":webview"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
                 implementation("org.jetbrains.kotlinx:atomicfu:0.23.2")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
@@ -70,6 +69,7 @@ kotlin {
                 api("androidx.activity:activity-compose:1.8.2")
                 api("androidx.appcompat:appcompat:1.6.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
+                api("androidx.webkit:webkit:1.7.0")
             }
         }
 //        val desktopMain by getting {
