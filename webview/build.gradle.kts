@@ -47,7 +47,7 @@ kotlin {
                 implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
-                implementation("co.touchlab:kermit:2.0.3")
+                implementation("co.touchlab:kermit:2.0.5-OHOS-001")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3-OHOS-001")
                 implementation("org.jetbrains.kotlinx:atomicfu:0.23.2-OHOS-008")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0-OHOS-002")
