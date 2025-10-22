@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    id("org.jetbrains.compose")version "1.6.1-KBA-007"
+    id("org.jetbrains.compose") version "1.6.1-KBA-007"
     id("com.android.library")
     id("org.jetbrains.kotlin.plugin.atomicfu")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.21-KBA-006"
@@ -23,14 +23,7 @@ kotlin {
 //    jvm("desktop")
 
     // 添加OHOS支持
-    listOf(
-        ohosX64(),
-        ohosArm64(),
-    ).forEach { ohosTarget ->
-        ohosTarget.binaries.sharedLib {
-            baseName = "shared"
-        }
-    }
+    ohosArm64()
 
 //    listOf(
 //        iosX64(),
@@ -54,13 +47,10 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation("co.touchlab:kermit:2.0.3")
-                implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
-                implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion")
                 api(project(":webview"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-                implementation("org.jetbrains.kotlinx:atomicfu:0.23.2")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-                implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha03")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3-OHOS-001")
+                implementation("org.jetbrains.kotlinx:atomicfu:0.23.2-OHOS-008")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0-OHOS-002")
             }
         }
         val androidMain by getting {
@@ -83,23 +73,13 @@ kotlin {
         }
 
         // 添加OHOS源集
-        val ohosMain by creating {
+        val ohosMain by getting {
             dependsOn(commonMain)
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-ohos:$coroutinesVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
             }
         }
 
-        val ohosTest by creating {
-            dependsOn(commonTest)
-        }
-
-        val ohosX64Main by getting {
-            dependsOn(ohosMain)
-        }
-        val ohosArm64Main by getting {
-            dependsOn(ohosMain)
-        }
     }
 }
 

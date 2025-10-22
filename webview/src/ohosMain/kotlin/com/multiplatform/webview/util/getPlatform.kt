@@ -7,11 +7,17 @@ internal actual fun getPlatform(): Platform {
 }
 
 internal actual fun getPlatformVersion(): String {
-    // OHOS平台版本获取逻辑需要根据实际OHOS SDK实现
-    return SystemVersion.getApiVersion()
+    return try {
+        SystemVersion.getVersion()
+    } catch (e: Exception) {
+        "Unknown"
+    }
 }
 
 internal actual fun getPlatformVersionDouble(): Double {
-    // OHOS平台版本获取逻辑需要根据实际OHOS SDK实现
-    return SystemVersion.getApiVersion().toDoubleOrNull() ?: 0.0
+    return try {
+        SystemVersion.getVersion().toDoubleOrNull() ?: 0.0
+    } catch (e: Exception) {
+        0.0
+    }
 }

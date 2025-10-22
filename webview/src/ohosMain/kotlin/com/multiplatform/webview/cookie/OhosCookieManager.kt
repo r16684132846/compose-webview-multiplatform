@@ -86,21 +86,22 @@ object OhosCookieManager : CookieManager {
         if (cookieString.isBlank()) return emptyList()
 
         val cookies = mutableListOf<Cookie>()
-        val cookiePairs = cookieString.split("; ")
+        val cookiePairs = cookieString.split(";")
 
         for (pair in cookiePairs) {
-            val equalIndex = pair.indexOf('=')
+            val trimmedPair = pair.trim()
+            val equalIndex = trimmedPair.indexOf('=')
             if (equalIndex > 0) {
-                val name = pair.substring(0, equalIndex)
-                val value = pair.substring(equalIndex + 1)
+                val name = trimmedPair.substring(0, equalIndex)
+                val value = trimmedPair.substring(equalIndex + 1)
                 cookies.add(Cookie(name = name, value = value))
             } else if (equalIndex == 0) {
                 // 只有值没有名称的cookie
-                val value = pair.substring(1)
+                val value = trimmedPair.substring(1)
                 cookies.add(Cookie(name = "", value = value))
             } else {
                 // 只有名称没有值的cookie
-                cookies.add(Cookie(name = pair, value = ""))
+                cookies.add(Cookie(name = trimmedPair, value = ""))
             }
         }
 

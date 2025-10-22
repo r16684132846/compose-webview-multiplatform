@@ -28,9 +28,8 @@ class OhosIWebView(private val context: Context) : IWebView {
         if (additionalHttpHeaders.isEmpty()) {
             webViewInstance.load(url)
         } else {
-            // OHOS WebView可能需要通过其他方式设置headers
+            // OHOS WebView处理额外HTTP头的方式
             webViewInstance.load(url)
-            // 在实际实现中，可能需要通过其他方式处理额外的HTTP头
         }
     }
 
@@ -51,7 +50,6 @@ class OhosIWebView(private val context: Context) : IWebView {
 
     override fun loadHtmlFile(fileName: String) {
         OhosLogger.debug("加载HTML文件: $fileName")
-        // 在OHOS中加载HTML文件，假设文件在assets目录中
         val url = "file:///assets/$fileName"
         webViewInstance.load(url)
     }
@@ -62,7 +60,6 @@ class OhosIWebView(private val context: Context) : IWebView {
     ) {
         OhosLogger.debug("POST请求URL: $url")
         try {
-            // 将postData转换为字符串，通常是以UTF-8编码的表单数据
             val postDataString = String(postData, Charsets.UTF_8)
 
             // 使用WebView的postUrl方法
@@ -125,6 +122,7 @@ class OhosIWebView(private val context: Context) : IWebView {
         }
     }
 
+
     override fun injectJsBridge() {
         OhosLogger.debug("注入JavaScript桥接")
         // 实现OHOS平台JavaScript桥接逻辑
@@ -161,6 +159,7 @@ class OhosIWebView(private val context: Context) : IWebView {
         evaluateJavascript("javascript:$initJs", null)
     }
 
+
     override fun stopLoading() {
         OhosLogger.debug("停止加载")
         webViewInstance.stopLoading()
@@ -191,24 +190,14 @@ class OhosIWebView(private val context: Context) : IWebView {
 
     override fun canGoForward(): Boolean = webViewInstance.canGoForward()
 
-    override fun goBack() {
-        OhosLogger.debug("返回上一页")
-        webViewInstance.goBack()
-    }
-
     override fun goForward() {
         OhosLogger.debug("前进到下一页")
         webViewInstance.goForward()
     }
 
-    override fun evaluateJavaScript(
-        script: String,
-        callback: ((String) -> Unit)?
-    ) {
-        OhosLogger.debug("执行JavaScript (evaluateJavaScript): $script")
-        webViewInstance.evaluateJavascript(script) { result ->
-            callback?.invoke(result ?: "")
-        }
+    override fun goBack() {
+        OhosLogger.debug("返回上一页")
+        webViewInstance.goBack()
     }
 
     override fun initJsBridge(webViewJsBridge: WebViewJsBridge) {
@@ -220,12 +209,9 @@ class OhosIWebView(private val context: Context) : IWebView {
     override fun saveState(): WebViewBundle? {
         OhosLogger.debug("保存状态")
         // OHOS平台保存状态的实现
-        // 根据OHOS API文档，应该使用适当的API来保存WebView状态
-        // 这里提供一个基础实现，实际项目中可能需要根据具体需求进行调整
         return try {
             // 创建一个简单的状态保存实现
             val bundle = ohos.utils.PacMap()
-            // 注意：这只是一个示例实现，实际的状态保存可能需要更多细节
             bundle.putStringValue("last_url", webViewInstance.url ?: "")
             bundle
         } catch (e: Exception) {

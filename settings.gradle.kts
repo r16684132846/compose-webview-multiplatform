@@ -24,13 +24,6 @@ pluginManagement {
                 password = "notekmp1504"
             }
         }
-        // 添加OHOS插件仓库
-        maven {
-            setUrl("https://repo.huaweicloud.com/repository/maven/")
-        }
-        maven {
-            setUrl("https://mirrors.huaweicloud.com/repository/maven/")
-        }
     }
 
     plugins {
@@ -75,13 +68,6 @@ dependencyResolutionManagement {
                 username = "kmp2"
                 password = "notekmp1504"
             }
-        }
-        // 添加OHOS依赖仓库
-        maven {
-            setUrl("https://repo.huaweicloud.com/repository/maven/")
-        }
-        maven {
-            setUrl("https://mirrors.huaweicloud.com/repository/maven/")
         }
     }
 }
