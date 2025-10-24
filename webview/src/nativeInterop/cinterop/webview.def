@@ -1,0 +1,10 @@
+language = C
+headers = webview/webview.h
+headers = webview/webview_host.h
+
+package = platform.ohos.webview
+
+compilerOpts = -I${OHOS_SDK_HOME}/native/sysroot/usr/include
+compilerOpts = -I${OHOS_SDK_HOME}/native/sysroot/usr/include/webview
+
+linkerOpts = -lwebview

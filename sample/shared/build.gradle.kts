@@ -5,6 +5,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.plugin.atomicfu")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.21-KBA-006"
+    id("maven-publish")
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -23,7 +24,14 @@ kotlin {
 //    jvm("desktop")
 
     // 添加OHOS支持
-    ohosArm64()
+    ohosArm64(){
+        binaries{
+            all {
+                linkerOpts("-lhilog_ndk.z",
+                    "${System.getenv("OHOS_SDK_HOME")}/native/llvm/lib/aarch64-linux-ohos/libunwind.a")
+            }
+        }
+    }
 
 //    listOf(
 //        iosX64(),
@@ -73,10 +81,10 @@ kotlin {
         }
 
         // 添加OHOS源集
-        val ohosMain by getting {
-            dependsOn(commonMain)
+        val ohosArm64Main by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2-OHOS-007")
             }
         }
 
@@ -100,5 +108,22 @@ android {
     }
     kotlin {
         jvmToolchain(17)
+    }
+}
+// 配置发布
+publishing {
+    publications {
+        withType<MavenPublication> {
+            groupId = project.property("GROUP").toString()
+            artifactId = project.property("POM_ARTIFACT_ID").toString()
+            version = project.property("VERSION_NAME").toString()
+        }
+    }
+
+    repositories {
+        maven {
+            name = "Local"
+            url = uri(layout.buildDirectory.dir("repo"))
+        }
     }
 }

@@ -35,7 +35,24 @@ kotlin {
 //    }
 
     // 添加OHOS支持
-    ohosArm64()
+    ohosArm64(){
+        compilations.getByName("main") {
+            cinterops {
+                create("webview") {
+                    defFile = File("src/nativeInterop/cInterop/webview.def")
+                    packageName = "platform.ohos.webview"
+                    compilerOpts("-I${System.getenv("OHOS_SDK_HOME")}/native/sysroot/usr/include")
+                }
+            }
+        }
+        binaries{
+            all {
+                linkerOpts("-lhilog_ndk.z",
+                    "${System.getenv("OHOS_SDK_HOME")}/native/llvm/lib/aarch64-linux-ohos/libunwind.a",
+                    "-lwebview")
+            }
+        }
+    }
 
     sourceSets {
         val coroutinesVersion = extra["coroutines.version"] as String
@@ -72,6 +89,10 @@ kotlin {
         val ohosArm64Main by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2-OHOS-007")
+                implementation("org.jetbrains.compose.runtime:runtime")
+                implementation("org.jetbrains.compose.foundation:foundation")
+                implementation("org.jetbrains.compose.material:material")
             }
         }
 
@@ -101,6 +122,10 @@ android {
     kotlin {
         jvmToolchain(17)
     }
+}
+dependencies {
+    implementation("com.google.firebase:protolite-well-known-types:18.0.1")
+    implementation("androidx.core:core-i18n:1.0.0")
 }
 // 配置发布
 publishing {
@@ -138,6 +163,7 @@ publishing {
                 }
             }
         }
+
     }
 
     repositories {

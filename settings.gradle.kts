@@ -1,9 +1,9 @@
 rootProject.name = "compose-webview-multiplatform"
 
-//include(":sample:androidApp")
+include(":sample:androidApp")
 include(":webview")
 //include(":sample:desktopApp")
-//include(":sample:shared")
+include(":sample:shared")
 
 pluginManagement {
     repositories {
@@ -24,6 +24,7 @@ pluginManagement {
                 password = "notekmp1504"
             }
         }
+//        mavenLocal()
     }
 
     plugins {
@@ -69,6 +70,7 @@ dependencyResolutionManagement {
                 password = "notekmp1504"
             }
         }
+//        mavenLocal()
     }
 }
 //include(":shared")
