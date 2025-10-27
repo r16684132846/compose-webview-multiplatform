@@ -7,9 +7,6 @@ include(":sample:shared")
 
 pluginManagement {
     repositories {
-        gradlePluginPortal()
-        mavenCentral()
-        google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://mirrors.tencent.com/nexus/repository/maven-public")
         maven("https://mirrors.tencent.com/nexus/repository/maven-tencent")
@@ -25,6 +22,9 @@ pluginManagement {
             }
         }
 //        mavenLocal()
+        gradlePluginPortal()
+        mavenCentral()
+        google()
     }
 
     plugins {
@@ -53,10 +53,8 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
-        mavenCentral()
-        google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven { url = uri("https://jitpack.io") }
+        maven("https://jitpack.io")
         maven("https://mirrors.tencent.com/nexus/repository/maven-public")
         maven("https://mirrors.tencent.com/nexus/repository/maven-tencent")
         // 添加 Kotlin 官方仓库
@@ -70,7 +68,9 @@ dependencyResolutionManagement {
                 password = "notekmp1504"
             }
         }
-//        mavenLocal()
+        mavenLocal()
+        mavenCentral()
+        google()
     }
 }
-//include(":shared")
+include(":shared")

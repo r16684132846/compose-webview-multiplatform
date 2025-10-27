@@ -36,7 +36,7 @@ kotlin {
 
     // 添加OHOS支持
     ohosArm64(){
-        compilations.getByName("main") {
+        /*compilations.getByName("main") {
             cinterops {
                 create("webview") {
                     defFile = File("src/nativeInterop/cInterop/webview.def")
@@ -44,7 +44,7 @@ kotlin {
                     compilerOpts("-I${System.getenv("OHOS_SDK_HOME")}/native/sysroot/usr/include")
                 }
             }
-        }
+        }*/
         binaries{
             all {
                 linkerOpts("-lhilog_ndk.z",
@@ -78,12 +78,12 @@ kotlin {
                 api("androidx.webkit:webkit:1.7.0")
             }
         }
-//        val desktopMain by getting {
-//            dependencies {
-//                implementation(compose.desktop.common)
-//                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
-//            }
-//        }
+        /*val desktopMain by getting {
+            dependencies {
+                implementation(compose.desktop.common)
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
+            }
+        }*/
 
         // 添加OHOS源集
         val ohosArm64Main by getting {

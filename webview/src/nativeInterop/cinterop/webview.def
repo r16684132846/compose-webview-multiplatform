@@ -8,3 +8,28 @@ compilerOpts = -I${OHOS_SDK_HOME}/native/sysroot/usr/include
 compilerOpts = -I${OHOS_SDK_HOME}/native/sysroot/usr/include/webview
 
 linkerOpts = -lwebview
+
+---
+// WebView API 函数定义
+// 基于OHOS WebView C++ API
+
+// 创建和销毁 WebView
+ohos_webview_t* ohos_webview_create(void* context);
+void ohos_webview_destroy(ohos_webview_t* webview);
+
+// WebView 操作函数
+void ohos_webview_load_url(ohos_webview_t* webview, const char* url);
+void ohos_webview_load_html(ohos_webview_t* webview, const char* html);
+void ohos_webview_go_back(ohos_webview_t* webview);
+void ohos_webview_go_forward(ohos_webview_t* webview);
+void ohos_webview_reload(ohos_webview_t* webview);
+void ohos_webview_stop_loading(ohos_webview_t* webview);
+
+// 配置 WebView
+void ohos_webview_enable_javascript(ohos_webview_t* webview, bool enable);
+void ohos_webview_set_user_agent(ohos_webview_t* webview, const char* user_agent);
+
+// 获取状态
+const char* ohos_webview_get_url(ohos_webview_t* webview);
+bool ohos_webview_can_go_back(ohos_webview_t* webview);
+bool ohos_webview_can_go_forward(ohos_webview_t* webview);
