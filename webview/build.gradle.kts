@@ -24,15 +24,15 @@ kotlin {
 
 //    jvm("desktop")
 
-//    listOf(
-//        iosX64(),
-//        iosArm64(),
-//        iosSimulatorArm64(),
-//    ).forEach {
-//        it.binaries.framework {
-//            baseName = "shared"
-//        }
-//    }
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64(),
+    ).forEach {
+        it.binaries.framework {
+            baseName = "shared"
+        }
+    }
 
     // 添加OHOS支持
     ohosArm64(){
@@ -132,7 +132,6 @@ publishing {
     publications {
         withType<MavenPublication> {
             groupId = project.property("GROUP").toString()
-            artifactId = project.property("POM_ARTIFACT_ID").toString()
             version = project.property("VERSION_NAME").toString()
 
             pom {
