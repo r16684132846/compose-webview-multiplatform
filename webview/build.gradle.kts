@@ -105,7 +105,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.kevinnzou.sample"
+    namespace = "com.multiplatform.webview"
     compileSdk = 34
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
