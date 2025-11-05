@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultCInteropSettings
+
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
@@ -11,7 +13,6 @@ plugins {
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-//    targetHierarchy.default()
     applyDefaultHierarchyTemplate()
 
     androidTarget {
@@ -35,24 +36,19 @@ kotlin {
     }
 
     // 添加OHOS支持
-    ohosArm64(){
-        /*compilations.getByName("main") {
+    ohosArm64() {
+        compilations.getByName("main") {
             cinterops {
                 create("webview") {
-                    defFile = File("src/nativeInterop/cInterop/webview.def")
+                    definitionFile = File("src/ohosArm64Main/resources/ohos_webview.def")
                     packageName = "platform.ohos.webview"
                     compilerOpts("-I${System.getenv("OHOS_SDK_HOME")}/native/sysroot/usr/include")
                 }
             }
-        }*/
-        binaries{
-            all {
-                linkerOpts("-lhilog_ndk.z",
-                    "${System.getenv("OHOS_SDK_HOME")}/native/llvm/lib/aarch64-linux-ohos/libunwind.a",
-                    "-lwebview")
-            }
         }
+
     }
+
 
     sourceSets {
         val coroutinesVersion = extra["coroutines.version"] as String
@@ -126,6 +122,7 @@ android {
 dependencies {
     implementation("com.google.firebase:protolite-well-known-types:18.0.1")
     implementation("androidx.core:core-i18n:1.0.0")
+    implementation("androidx.compose.ui:ui-android:1.9.4")
 }
 // 配置发布
 publishing {

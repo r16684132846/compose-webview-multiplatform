@@ -1,0 +1,4 @@
+headers = webview.h webview_manager.h
+headerFilter = webview*.h
+package = platform.ohos.webview
+language = C

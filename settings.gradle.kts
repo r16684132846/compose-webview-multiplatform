@@ -7,11 +7,7 @@ include(":sample:shared")
 
 pluginManagement {
     repositories {
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://mirrors.tencent.com/nexus/repository/maven-public")
-        maven("https://mirrors.tencent.com/nexus/repository/maven-tencent")
-        // 添加 Kotlin 官方仓库
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/bootstrap")
         maven {
             isAllowInsecureProtocol = true
             name = "Nenus"
@@ -21,7 +17,11 @@ pluginManagement {
                 password = "notekmp1504"
             }
         }
-//        mavenLocal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        maven("https://mirrors.tencent.com/nexus/repository/maven-tencent")
+        // 添加 Kotlin 官方仓库
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/bootstrap")
+        mavenLocal()
         gradlePluginPortal()
         mavenCentral()
         google()
@@ -53,12 +53,7 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven("https://jitpack.io")
         maven("https://mirrors.tencent.com/nexus/repository/maven-public")
-        maven("https://mirrors.tencent.com/nexus/repository/maven-tencent")
-        // 添加 Kotlin 官方仓库
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/bootstrap")
         maven {
             isAllowInsecureProtocol = true
             name = "Nenus"
@@ -68,6 +63,11 @@ dependencyResolutionManagement {
                 password = "notekmp1504"
             }
         }
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        maven("https://jitpack.io")
+        maven("https://mirrors.tencent.com/nexus/repository/maven-tencent")
+        // 添加 Kotlin 官方仓库
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/bootstrap")
         mavenLocal()
         mavenCentral()
         google()
