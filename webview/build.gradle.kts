@@ -25,7 +25,7 @@ kotlin {
 
 //    jvm("desktop")
 
-    listOf(
+    /*listOf(
         iosX64(),
         iosArm64(),
         iosSimulatorArm64(),
@@ -33,7 +33,7 @@ kotlin {
         it.binaries.framework {
             baseName = "shared"
         }
-    }
+    }*/
 
     // 添加OHOS支持
     ohosArm64() {

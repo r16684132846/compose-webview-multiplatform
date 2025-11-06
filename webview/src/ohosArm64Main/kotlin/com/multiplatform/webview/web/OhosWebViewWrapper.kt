@@ -1,6 +1,5 @@
 package com.multiplatform.webview.web
 
-import OhosJsBridge
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +16,7 @@ class OhosWebViewWrapper(
     private val jsBridge = OhosJsBridge(webView)
 
     init {
+        webView.setWebViewWrapper(this)
         initWebView()
     }
 

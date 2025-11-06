@@ -1,3 +1,5 @@
+package com.multiplatform.webview.web
+
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.util.KLogger
 import com.multiplatform.webview.web.OhosWebView

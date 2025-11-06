@@ -14,6 +14,7 @@ actual typealias NativeWebView = OhosWebView
 // OHOS原生WebView包装器
 class OhosWebView {
     private var webViewClient: OhosWebViewClient? = null
+    private var webViewWrapper: OhosWebViewWrapper? = null
 
     fun canGoBack(): Boolean = webViewClient?.canGoBack() ?: false
     fun canGoForward(): Boolean = webViewClient?.canGoForward() ?: false
@@ -76,6 +77,12 @@ class OhosWebView {
     fun setWebViewClient(client: OhosWebViewClient) {
         this.webViewClient = client
     }
+
+    fun setWebViewWrapper(wrapper: OhosWebViewWrapper) {
+        this.webViewWrapper = wrapper
+    }
+
+    fun getWebViewWrapper(): OhosWebViewWrapper? = this.webViewWrapper
 }
 
 // OHOS WebView客户端
@@ -343,8 +350,7 @@ class OHOSWebView(
 
     override suspend fun loadHtmlFile(fileName: String) {
         KLogger.d { "Loading HTML file in OHOS WebView: $fileName" }
-        // 纯Kotlin实现，模拟加载文件
-        webView.loadUrl("file:///$fileName")
+        webView.loadUrl("file://assets/$fileName")
     }
 
     override fun postUrl(url: String, postData: ByteArray) {
@@ -374,9 +380,7 @@ class OHOSWebView(
 
     override fun evaluateJavaScript(script: String, callback: ((String) -> Unit)?) {
         KLogger.d { "Evaluating JavaScript in OHOS WebView with length: ${script.length}" }
-        webView.evaluateJavascript(script) { result ->
-            callback?.invoke(result)
-        }
+        webView.evaluateJavascript(script, callback)
     }
 
     override fun injectJsBridge() {
@@ -384,18 +388,39 @@ class OHOSWebView(
         super.injectJsBridge()
         KLogger.d { "Injecting JS Bridge for OHOS WebView" }
 
-        // 注册Kotlin对象供JS调用
-        webView.addJavascriptInterface(webViewJsBridge, "KotlinBridge")
+        // 注入桥接代码
+        val bridgeScript = """
+            window.bridge = {
+                onRenderFinished: function() {
+                    if (window.KotlinBridge) {
+                        window.KotlinBridge.postMessage(JSON.stringify({
+                            method: 'onRenderFinished',
+                            params: []
+                        }));
+                    }
+                },
+                callKotlin: function(methodName, params) {
+                    if (window.KotlinBridge) {
+                        window.KotlinBridge.postMessage(JSON.stringify({
+                            method: methodName,
+                            params: params || []
+                        }));
+                    }
+                }
+            };
+        """.trimIndent()
+
+        evaluateJavaScript(bridgeScript)
     }
 
     override fun initJsBridge(webViewJsBridge: WebViewJsBridge) {
         KLogger.d { "Initializing JS Bridge for OHOS WebView" }
-        // 在纯Kotlin实现中，我们只是记录日志
+        webView.addJavascriptInterface(webViewJsBridge, "KotlinBridge")
     }
 
     override fun saveState(): WebViewBundle? {
         KLogger.d { "Saving state in OHOS WebView" }
-        // 在纯Kotlin实现中，我们只是模拟保存状态
+        val bundle = OhosWebViewBundle()
         return WebViewBundle()
     }
 

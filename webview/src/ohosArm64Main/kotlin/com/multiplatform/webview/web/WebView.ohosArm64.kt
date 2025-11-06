@@ -14,17 +14,11 @@ import androidx.compose.ui.interop.InteropContainer
 import androidx.compose.ui.napi.asString
 import androidx.compose.ui.napi.js
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
+import com.multiplatform.webview.setting.WebSettings
 import com.multiplatform.webview.util.KLogger
-import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.alloc
-import kotlinx.cinterop.convert
-import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.ptr
-import platform.ohos.napi_create_string_utf8
 import platform.ohos.napi_env
-import platform.ohos.napi_value
-import platform.posix.size_t
+
 
 @OptIn(ExperimentalForeignApi::class)
 @Composable
@@ -70,9 +64,9 @@ actual fun ActualWebView(
             modifier = Modifier.fillMaxSize(),
             parameter = js {
                 "url"(currentUrl)
-                "enableJavaScript"(true)
-                "javascriptEnabled"(true)
-                "domStorageEnabled"(true)
+                "enableJavaScript"(state.webSettings.isJavaScriptEnabled)
+                "javascriptEnabled"(state.webSettings.isJavaScriptEnabled)
+                "domStorageEnabled"(state.webSettings.androidWebSettings.domStorageEnabled)
                 state.webSettings.customUserAgentString?.let { userAgent ->
                     "userAgent"(userAgent)
                 }
@@ -88,11 +82,11 @@ actual fun ActualWebView(
                 }
                 "visibility"(if (state.isLoading) "hidden" else "visible")
             },
-            onCreate = {
+            onCreate = { webViewInstance ->
                 ohosWebView?.initWebView()
                 KLogger.d { "OHOS WebView created" }
             },
-            onRelease = {
+            onRelease = { webViewInstance ->
                 KLogger.d { "OHOS WebView released" }
                 onDispose(webView)
             },
@@ -105,8 +99,24 @@ actual fun ActualWebView(
                         currentUrl = urlString
                     }
                 }
-//                val visibilityStr = if (state.isLoading) "hidden" else "visible"
-//                params["visibility"] = stringToNapiValue(visibilityStr)
+
+                // 处理页面加载完成事件
+                params["onPageFinished"]?.let {
+                    state.loadingState = LoadingState.Finished
+                }
+
+                // 处理页面开始加载事件
+                params["onPageStarted"]?.let {
+                    // 如果有进度信息，可以在这里获取
+                    val progressValue = params["progress"]?.asString()?.toFloatOrNull()
+                    state.loadingState = LoadingState.Loading(progressValue ?: 0f)
+                }
+
+                // 处理错误事件
+                params["onError"]?.let { errorValue ->
+                    val errorMessage = errorValue.asString() ?: "Unknown error"
+                    state.errorsForCurrentRequest.add(WebViewError(-1, errorMessage)) // 添加到错误列表
+                }
             },
             interactive = true,
             container = InteropContainer.BACK
