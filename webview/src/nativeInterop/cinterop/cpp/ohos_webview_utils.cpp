@@ -1,0 +1,1 @@
+extern "C" const char *getDefaultSystemFontName(void) { return "system"; }

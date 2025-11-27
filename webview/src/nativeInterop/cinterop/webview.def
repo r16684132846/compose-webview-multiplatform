@@ -1,0 +1,6 @@
+package = platform.ohos.webview
+headers = ohos_webview_utils.h webview.h webview_manager.h
+headerFilter = ohos_webview_utils.h webview.h webview_manager.h
+staticLibraries = libwebview_utils.a
+libraryPaths = src/nativeInterop/cinterop/cpp
+linkerOpts = -lace_napi.z -lrawfile.z -lhwge_textfont.z -lhilog_ndk.z

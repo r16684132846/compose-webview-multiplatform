@@ -40,15 +40,22 @@ kotlin {
         compilations.getByName("main") {
             cinterops {
                 create("webview") {
-                    definitionFile = File("src/ohosArm64Main/resources/ohos_webview.def")
-                    packageName = "platform.ohos.webview"
-                    compilerOpts("-I${System.getenv("OHOS_SDK_HOME")}/native/sysroot/usr/include")
+                    definitionFile.set(file("src/nativeInterop/cinterop/webview.def"))
+                    includeDirs("$projectDir/src/nativeInterop/cinterop/cpp")
                 }
             }
         }
-
+        binaries {
+            all {
+                linkerOpts(
+                    "-lhilog_ndk.z",
+                    "-lhwge_textfont.z",
+                    "${System.getenv("OHOS_SDK_HOME") ?: ""}/native/llvm/lib/aarch64-linux-ohos/libunwind.a",
+                    "-lwebview"
+                )
+            }
+        }
     }
-
 
     sourceSets {
         val coroutinesVersion = extra["coroutines.version"] as String
@@ -123,6 +130,7 @@ dependencies {
     implementation("com.google.firebase:protolite-well-known-types:18.0.1")
     implementation("androidx.core:core-i18n:1.0.0")
     implementation("androidx.compose.ui:ui-android:1.9.4")
+    implementation("androidx.compose.ui:ui-desktop:1.7.0")
 }
 // 配置发布
 publishing {

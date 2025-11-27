@@ -1,0 +1,3 @@
+D:/Third-party_Library/clone/compose-webview-multiplatform-003/webview/src/nativeInterop/cinterop/cpp/CMakeFiles/webview_utils.dir
+D:/Third-party_Library/clone/compose-webview-multiplatform-003/webview/src/nativeInterop/cinterop/cpp/CMakeFiles/edit_cache.dir
+D:/Third-party_Library/clone/compose-webview-multiplatform-003/webview/src/nativeInterop/cinterop/cpp/CMakeFiles/rebuild_cache.dir

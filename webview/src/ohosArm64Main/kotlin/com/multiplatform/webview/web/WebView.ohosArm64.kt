@@ -14,11 +14,9 @@ import androidx.compose.ui.interop.InteropContainer
 import androidx.compose.ui.napi.asString
 import androidx.compose.ui.napi.js
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
-import com.multiplatform.webview.setting.WebSettings
 import com.multiplatform.webview.util.KLogger
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.ohos.napi_env
-
 
 @OptIn(ExperimentalForeignApi::class)
 @Composable
