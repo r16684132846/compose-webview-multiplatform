@@ -3,6 +3,128 @@ package com.multiplatform.webview.web
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.cinterop.*
+import kotlin.experimental.ExperimentalNativeApi
+
+// C API函数声明
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebViewManager_GetInstance")
+external fun OH_WebViewManager_GetInstance(): COpaquePointer?
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebViewManager_Init")
+external fun OH_WebViewManager_Init(manager: COpaquePointer?)
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_Create")
+external fun OH_WebView_Create(context: COpaquePointer?, manager: COpaquePointer?): COpaquePointer?
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_Destroy")
+external fun OH_WebView_Destroy(webview: COpaquePointer?)
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_LoadUrl")
+external fun OH_WebView_LoadUrl(webview: COpaquePointer?, url: String)
+
+// 新增函数声明
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_SetAbilityContext")
+external fun OH_SetAbilityContext(context: COpaquePointer?)
+
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_LoadData")
+external fun OH_WebView_LoadData(
+    webview: COpaquePointer?,
+    data: String,
+    mimeType: String?,
+    encoding: String?,
+    baseUrl: String?
+)
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_EvaluateJavascript")
+external fun OH_WebView_EvaluateJavascript(
+    webview: COpaquePointer?,
+    script: String,
+    callback: COpaquePointer?,
+    userData: COpaquePointer?
+)
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_CanGoBack")
+external fun OH_WebView_CanGoBack(webview: COpaquePointer?): Boolean
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_CanGoForward")
+external fun OH_WebView_CanGoForward(webview: COpaquePointer?): Boolean
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_GoBack")
+external fun OH_WebView_GoBack(webview: COpaquePointer?)
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_GoForward")
+external fun OH_WebView_GoForward(webview: COpaquePointer?)
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_Reload")
+external fun OH_WebView_Reload(webview: COpaquePointer?)
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_StopLoading")
+external fun OH_WebView_StopLoading(webview: COpaquePointer?)
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_SetPageStartedCallback")
+external fun OH_WebView_SetPageStartedCallback(
+    webview: COpaquePointer?,
+    callback: COpaquePointer?,
+    userData: COpaquePointer?
+)
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_AddJavascriptInterface")
+external fun OH_WebView_AddJavascriptInterface(
+    webview: COpaquePointer?,
+    name: String,
+    obj: COpaquePointer?
+)
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_SetPageFinishedCallback")
+external fun OH_WebView_SetPageFinishedCallback(
+    webview: COpaquePointer?,
+    callback: COpaquePointer?,
+    userData: COpaquePointer?
+)
+
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("OH_WebView_SetErrorCallback")
+external fun OH_WebView_SetErrorCallback(
+    webview: COpaquePointer?,
+    callback: COpaquePointer?,
+    userData: COpaquePointer?
+)
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -11,18 +133,112 @@ import kotlinx.coroutines.CoroutineScope
 // OHOS原生WebView类型
 actual typealias NativeWebView = OhosWebView
 
+// JavaScript执行回调数据结构
+@ExperimentalForeignApi
+class JsCallbackData(
+    val callback: ((String) -> Unit)?,
+    val user_data: COpaquePointer?
+)
+
+// 页面开始加载回调
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("page_started_callback")
+fun pageStartedCallback(url: CPointer<ByteVar>?, userData: COpaquePointer?) {
+    // 实际实现中处理页面开始加载事件
+    KLogger.d { "Page started: ${url?.toKString()}" }
+}
+
+// 页面加载完成回调
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("page_finished_callback")
+fun pageFinishedCallback(url: CPointer<ByteVar>?, userData: COpaquePointer?) {
+    // 实际实现中处理页面加载完成事件
+    KLogger.d { "Page finished: ${url?.toKString()}" }
+}
+
+// 错误回调
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("error_callback")
+fun errorCallback(
+    errorCode: Int,
+    description: CPointer<ByteVar>?,
+    failingUrl: CPointer<ByteVar>?,
+    userData: COpaquePointer?
+) {
+    // 实际实现中处理错误事件
+    KLogger.d { "Error occurred: code=$errorCode, description=${description?.toKString()}, url=${failingUrl?.toKString()}" }
+}
+
+// JavaScript执行回调
+@OptIn(ExperimentalNativeApi::class)
+@ExperimentalForeignApi
+@CName("js_execute_callback")
+fun jsExecuteCallback(result: CPointer<ByteVar>?, userData: COpaquePointer?) {
+    // 实际实现中处理JavaScript执行结果
+    KLogger.d { "JavaScript executed, result: ${result?.toKString()}" }
+}
+
 // OHOS原生WebView包装器
 class OhosWebView {
-    private var webViewClient: OhosWebViewClient? = null
+    @OptIn(ExperimentalForeignApi::class)
+    private var nativeWebView: COpaquePointer? = null
     private var webViewWrapper: OhosWebViewWrapper? = null
 
-    fun canGoBack(): Boolean = webViewClient?.canGoBack() ?: false
-    fun canGoForward(): Boolean = webViewClient?.canGoForward() ?: false
+    @OptIn(ExperimentalForeignApi::class)
+    private var manager: COpaquePointer? = null
 
-    fun loadUrl(url: String, additionalHttpHeaders: Map<String, String> = emptyMap()) {
-        webViewClient?.loadUrl(url, additionalHttpHeaders)
+    // 添加上下文变量
+    @OptIn(ExperimentalForeignApi::class)
+    private var context: COpaquePointer? = null
+
+    init {
+        // 初始化WebView管理器
+        @OptIn(ExperimentalForeignApi::class)
+        manager = OH_WebViewManager_GetInstance()
+        @OptIn(ExperimentalForeignApi::class)
+        if (manager != null) {
+            OH_WebViewManager_Init(manager)
+        }
     }
 
+    @OptIn(ExperimentalForeignApi::class)
+    fun setContext(context: COpaquePointer?) {
+        this.context = context
+        // 设置Ability上下文
+        OH_SetAbilityContext(context)
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    fun canGoBack(): Boolean {
+        return nativeWebView?.let {
+            OH_WebView_CanGoBack(it)
+        } ?: false
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    fun canGoForward(): Boolean {
+        return nativeWebView?.let {
+            OH_WebView_CanGoForward(it)
+        } ?: false
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    fun loadUrl(url: String, additionalHttpHeaders: Map<String, String> = emptyMap()) {
+        if (nativeWebView == null && manager != null) {
+            // 创建WebView实例（这里需要传入正确的上下文）
+            nativeWebView = OH_WebView_Create(null, manager)
+        }
+
+        nativeWebView?.let { webView ->
+            OH_WebView_LoadUrl(webView, url)
+            KLogger.d { "Loading URL: $url" }
+        }
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
     fun loadDataWithBaseURL(
         baseUrl: String?,
         data: String,
@@ -30,52 +246,108 @@ class OhosWebView {
         encoding: String?,
         historyUrl: String?
     ) {
-        webViewClient?.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl)
+        if (nativeWebView == null && manager != null) {
+            // 创建WebView实例（这里需要传入正确的上下文）
+            nativeWebView = OH_WebView_Create(null, manager)
+        }
+
+        nativeWebView?.let { webView ->
+            OH_WebView_LoadData(webView, data, mimeType, encoding, baseUrl)
+            KLogger.d { "Loading data with base URL: $baseUrl" }
+        }
     }
 
     fun loadUrl(url: String) {
-        webViewClient?.loadUrl(url)
+        loadUrl(url, emptyMap())
     }
 
     fun postUrl(url: String, postData: ByteArray) {
-        webViewClient?.postUrl(url, postData)
+        // 在实际实现中，需要通过其他方式处理POST请求
+        KLogger.d { "Posting to URL: $url with data size: ${postData.size}" }
+        loadUrl(url)
     }
 
+    @OptIn(ExperimentalForeignApi::class)
     fun goBack() {
-        webViewClient?.goBack()
+        nativeWebView?.let {
+            OH_WebView_GoBack(it)
+            KLogger.d { "Going back" }
+        }
     }
 
+    @OptIn(ExperimentalForeignApi::class)
     fun goForward() {
-        webViewClient?.goForward()
+        nativeWebView?.let {
+            OH_WebView_GoForward(it)
+            KLogger.d { "Going forward" }
+        }
     }
 
+    @OptIn(ExperimentalForeignApi::class)
     fun reload() {
-        webViewClient?.reload()
+        nativeWebView?.let {
+            OH_WebView_Reload(it)
+            KLogger.d { "Reloading" }
+        }
     }
 
+    @OptIn(ExperimentalForeignApi::class)
     fun stopLoading() {
-        webViewClient?.stopLoading()
+        nativeWebView?.let {
+            OH_WebView_StopLoading(it)
+            KLogger.d { "Stopping loading" }
+        }
     }
 
+    @OptIn(ExperimentalForeignApi::class)
     fun evaluateJavascript(script: String, callback: ((String) -> Unit)?) {
-        webViewClient?.evaluateJavascript(script, callback)
+        nativeWebView?.let { webView ->
+            if (callback != null) {
+                // 创建回调数据结构
+                // 注意：这需要更复杂的实现来处理回调
+                OH_WebView_EvaluateJavascript(webView, script, null, null)
+            } else {
+                OH_WebView_EvaluateJavascript(webView, script, null, null)
+            }
+            KLogger.d { "Evaluating JavaScript: $script" }
+        }
     }
 
+    @OptIn(ExperimentalForeignApi::class)
     fun addJavascriptInterface(obj: Any, name: String) {
-        webViewClient?.addJavascriptInterface(obj, name)
+        nativeWebView?.let { webView ->
+            // 在实际实现中需要正确处理JavaScript接口
+            OH_WebView_AddJavascriptInterface(webView, name, null)
+            KLogger.d { "Adding JavaScript interface: $name" }
+        }
     }
 
     fun saveState(bundle: OhosWebViewBundle): OhosWebViewBundle? {
-        return webViewClient?.saveState(bundle)
+        KLogger.d { "Saving state" }
+        // 实际实现中需要保存WebView状态
+        bundle.canGoBack = canGoBack()
+        bundle.canGoForward = canGoForward()
+        return bundle
     }
 
     var scrollX: Int = 0
-        get() = webViewClient?.scrollX ?: 0
+        get() = 0 // 实际实现中需要获取滚动位置
     var scrollY: Int = 0
-        get() = webViewClient?.scrollY ?: 0
+        get() = 0 // 实际实现中需要获取滚动位置
 
+    @OptIn(ExperimentalForeignApi::class)
     fun setWebViewClient(client: OhosWebViewClient) {
-        this.webViewClient = client
+        // 实际实现中需要设置WebView客户端
+        // 这里注册回调函数
+        nativeWebView?.let { webView ->
+            OH_WebView_SetPageStartedCallback(webView, staticCFunction(::pageStartedCallback), null)
+            OH_WebView_SetPageFinishedCallback(
+                webView,
+                staticCFunction(::pageFinishedCallback),
+                null
+            )
+            OH_WebView_SetErrorCallback(webView, staticCFunction(::errorCallback), null)
+        }
     }
 
     fun setWebViewWrapper(wrapper: OhosWebViewWrapper) {
@@ -130,23 +402,12 @@ class OhosWebViewClient {
 
         // 模拟加载进度
         onProgressChanged?.invoke(10)
+        onProgressChanged?.invoke(50)
+        onProgressChanged?.invoke(100)
 
-        try {
-            // 这里应该是实际的OpenHarmony WebView加载URL逻辑
-            // 由于这是一个示例实现，我们模拟整个过程
-
-            // 模拟资源加载
-            onLoadResource?.invoke(url)
-            onProgressChanged?.invoke(50)
-
-            // 模拟加载完成
-            canGoBack = true // 加载完成后可以后退
-            onProgressChanged?.invoke(100)
-            onPageFinished?.invoke(url)
-        } catch (e: Exception) {
-            KLogger.e { "Failed to load URL: $url, error: ${e.message}" }
-            onReceivedError?.invoke(-1, e.message ?: "Unknown error", url)
-        }
+        // 模拟加载完成
+        canGoBack = true // 加载完成后可以后退
+        onPageFinished?.invoke(url)
     }
 
     fun loadDataWithBaseURL(
@@ -161,18 +422,10 @@ class OhosWebViewClient {
         val finalUrl = historyUrl ?: baseUrl ?: "about:blank"
         onPageStarted?.invoke(finalUrl)
         onProgressChanged?.invoke(10)
-
-        try {
-            onLoadResource?.invoke(finalUrl)
-            onProgressChanged?.invoke(50)
-
-            canGoBack = true
-            onProgressChanged?.invoke(100)
-            onPageFinished?.invoke(finalUrl)
-        } catch (e: Exception) {
-            KLogger.e { "Failed to load data with base URL: $baseUrl, error: ${e.message}" }
-            onReceivedError?.invoke(-1, e.message ?: "Unknown error", finalUrl)
-        }
+        onProgressChanged?.invoke(50)
+        onProgressChanged?.invoke(100)
+        canGoBack = true
+        onPageFinished?.invoke(finalUrl)
     }
 
     fun loadUrl(url: String) {
@@ -185,19 +438,10 @@ class OhosWebViewClient {
 
         onPageStarted?.invoke(url)
         onProgressChanged?.invoke(10)
-
-        try {
-            // 模拟POST请求处理
-            onLoadResource?.invoke(url)
-            onProgressChanged?.invoke(50)
-
-            canGoBack = true
-            onProgressChanged?.invoke(100)
-            onPageFinished?.invoke(url)
-        } catch (e: Exception) {
-            KLogger.e { "Failed to post URL: $url, error: ${e.message}" }
-            onReceivedError?.invoke(-1, e.message ?: "Unknown error", url)
-        }
+        onProgressChanged?.invoke(50)
+        onProgressChanged?.invoke(100)
+        canGoBack = true
+        onPageFinished?.invoke(url)
     }
 
     fun goBack() {
@@ -421,7 +665,7 @@ class OHOSWebView(
     override fun saveState(): WebViewBundle? {
         KLogger.d { "Saving state in OHOS WebView" }
         val bundle = OhosWebViewBundle()
-        return WebViewBundle()
+        return webView.saveState(bundle) as WebViewBundle?
     }
 
     override fun scrollOffset(): Pair<Int, Int> {

@@ -148,3 +148,28 @@ actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView {
  *     loaded file content (if a file, otherwise, an empty string)
  */
 actual class WebViewFactoryParam
+
+/**
+ * OpenHarmony implementation for opening URL in system browser
+ */
+@Composable
+actual fun openBrower(url: String) {
+    try {
+        // 使用鸿蒙系统的隐式Want来打开浏览器
+        // 构造Want对象
+        /* val want = mapOf(
+             "action" to "ohos.want.action.viewData",
+             "entities" to listOf("entity.system.browsable"),
+             "uri" to url
+         )
+
+         // 目前只是打印日志表明意图
+         println("OpenHarmony openBrower would open URL: $url with want: $want")*/
+        // 通过 JNI 调用 C API 来打开浏览器
+//        OH_OpenBrowser(url)
+        // TODO: 这里需要根据实际可用的鸿蒙API来实现
+    } catch (e: Exception) {
+        // Handle exception if unable to open browser
+        e.printStackTrace()
+    }
+}

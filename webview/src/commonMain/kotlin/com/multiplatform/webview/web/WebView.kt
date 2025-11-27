@@ -186,6 +186,12 @@ expect class WebViewFactoryParam
 expect fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView
 
 /**
+ * Opens a URL in the system browser
+ */
+@Composable
+expect fun openBrower(url: String)
+
+/**
  * Expect API of [WebView] that is implemented in the platform-specific modules.
  */
 @Composable

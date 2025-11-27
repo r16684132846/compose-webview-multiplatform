@@ -46,7 +46,26 @@ actual data class WebViewFactoryParam(val config: WKWebViewConfiguration)
 
 /** Default WebView factory for iOS. */
 @OptIn(ExperimentalForeignApi::class)
-actual fun defaultWebViewFactory(param: WebViewFactoryParam) = WKWebView(frame = CGRectZero.readValue(), configuration = param.config)
+actual fun defaultWebViewFactory(param: WebViewFactoryParam) =
+    WKWebView(frame = CGRectZero.readValue(), configuration = param.config)
+
+/**
+ * iOS implementation for opening URL in system browser
+ */
+@Composable
+actual fun openBrower(url: String) {
+    val nsUrl = platform.Foundation.NSURL.URLWithString(url)
+    if (nsUrl != null) {
+        val application = platform.UIKit.UIApplication.sharedApplication
+        if (application.canOpenURL(nsUrl)) {
+            application.openURL(
+                url = nsUrl,
+                options = emptyMap<Any?, Any?>(),
+                completionHandler = null
+            )
+        }
+    }
+}
 
 /**
  * iOS WebView implementation.
@@ -109,9 +128,9 @@ fun IOSWebView(
                         (it.iOSWebSettings.backgroundColor ?: it.backgroundColor).toUIColor()
                     val scrollViewColor =
                         (
-                            it.iOSWebSettings.underPageBackgroundColor
-                                ?: it.backgroundColor
-                        ).toUIColor()
+                                it.iOSWebSettings.underPageBackgroundColor
+                                    ?: it.backgroundColor
+                                ).toUIColor()
                     setOpaque(it.iOSWebSettings.opaque)
                     if (!it.iOSWebSettings.opaque) {
                         setBackgroundColor(backgroundColor)

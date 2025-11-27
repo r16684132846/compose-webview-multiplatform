@@ -10,7 +10,11 @@ endif ()
 include_directories(${NATIVERENDER_ROOT_PATH}
         ${NATIVERENDER_ROOT_PATH})
 
-add_library(webview_utils STATIC ohos_webview_utils.cpp)
+# 添加webview_api.cpp到编译中
+add_library(webview_utils STATIC
+        ohos_webview_utils.cpp
+        webview_api.cpp)
+
 target_link_libraries(webview_utils PUBLIC libhilog_ndk.z.so)
 target_link_libraries(webview_utils PUBLIC
         libace_napi.z.so

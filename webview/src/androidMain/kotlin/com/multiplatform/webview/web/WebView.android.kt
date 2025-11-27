@@ -3,6 +3,7 @@ package com.multiplatform.webview.web
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 
 /**
@@ -36,3 +37,24 @@ actual data class WebViewFactoryParam(val context: Context)
 
 /** Default WebView factory for Android. */
 actual fun defaultWebViewFactory(param: WebViewFactoryParam) = android.webkit.WebView(param.context)
+
+/**
+ * Android implementation for opening URL in system browser
+ */
+@Composable
+actual fun openBrower(url: String) {
+    // 获取当前的 Context
+    val context = LocalContext.current
+    // 创建 Intent
+    val intent =
+        android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url))
+    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+
+    // 启动浏览器
+    try {
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        // Handle exception if unable to open browser
+        e.printStackTrace()
+    }
+}

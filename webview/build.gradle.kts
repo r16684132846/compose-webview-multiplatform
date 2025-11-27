@@ -51,7 +51,9 @@ kotlin {
                     "-lhilog_ndk.z",
                     "-lhwge_textfont.z",
                     "${System.getenv("OHOS_SDK_HOME") ?: ""}/native/llvm/lib/aarch64-linux-ohos/libunwind.a",
-                    "-lwebview"
+                    "-lwebview",
+                    "-lability_runtime",
+                    "-lwant"
                 )
             }
         }

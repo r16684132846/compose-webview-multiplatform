@@ -44,12 +44,13 @@ actual class WebViewFactoryParam(
     val fileContent: String,
 ) {
     inline val webSettings get() = state.webSettings
-    inline val rendering: CefRendering get() =
-        if (webSettings.desktopWebSettings.offScreenRendering) {
-            CefRendering.OFFSCREEN
-        } else {
-            CefRendering.DEFAULT
-        }
+    inline val rendering: CefRendering
+        get() =
+            if (webSettings.desktopWebSettings.offScreenRendering) {
+                CefRendering.OFFSCREEN
+            } else {
+                CefRendering.DEFAULT
+            }
     inline val transparent: Boolean get() = webSettings.desktopWebSettings.transparent
     val requestContext: CefRequestContext get() = createModifiedRequestContext(webSettings)
 }
@@ -64,6 +65,7 @@ actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
                 param.transparent,
                 param.requestContext,
             )
+
         is WebContent.Data ->
             param.client.createBrowserWithHtml(
                 content.data,
@@ -71,6 +73,7 @@ actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
                 param.rendering,
                 param.transparent,
             )
+
         is WebContent.File ->
             param.client.createBrowserWithHtml(
                 param.fileContent,
@@ -78,6 +81,7 @@ actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
                 param.rendering,
                 param.transparent,
             )
+
         else ->
             param.client.createBrowser(
                 KCEFBrowser.BLANK_URI,
@@ -86,6 +90,22 @@ actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
                 param.requestContext,
             )
     }
+
+/**
+ * Desktop implementation for opening URL in system browser
+ */
+@Composable
+actual fun openBrower(url: String) {
+    try {
+        val desktop = java.awt.Desktop.getDesktop()
+        if (desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+            desktop.browse(java.net.URI.create(url))
+        }
+    } catch (e: Exception) {
+        // Handle exception if unable to open browser
+        e.printStackTrace()
+    }
+}
 
 /**
  * Desktop WebView implementation.
