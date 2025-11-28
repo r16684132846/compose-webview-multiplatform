@@ -1,4 +1,4 @@
-# Install script for directory: D:/Third-party_Library/clone/compose-webview-multiplatform-003/webview/src/nativeInterop/cinterop/cpp
+# Install script for directory: D:/Third-party_Library/clone/compose-webview-multiplatform/webview/src/nativeInterop/cinterop/cpp
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "D:/Third-party_Library/clone/compose-webview-multiplatform-003/webview/src/nativeInterop/cinterop/cpp/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "D:/Third-party_Library/clone/compose-webview-multiplatform/webview/src/nativeInterop/cinterop/cpp/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

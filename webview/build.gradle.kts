@@ -36,7 +36,13 @@ kotlin {
     }*/
 
     // 添加OHOS支持
-    ohosArm64()
+    ohosArm64() {
+        val main by compilations.getting
+        val webview by main.cinterops.creating {
+            definitionFile.set(file("src/nativeInterop/cinterop/webview.def"))
+            includeDirs("$projectDir/src/nativeInterop/cinterop/cpp")
+        }
+    }
 
 //        compilations.getByName("main") {
 //            cinterops {

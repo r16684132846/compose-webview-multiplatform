@@ -42,7 +42,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = "D:\Huawei\DevEco Studio\sdk\default\openharmony\native\build-tools\cmake\bin\cmake.exe" --regenerate-during-build -SD:\Third-party_Library\clone\compose-webview-multiplatform-003\webview\src\nativeInterop\cinterop\cpp -BD:\Third-party_Library\clone\compose-webview-multiplatform-003\webview\src\nativeInterop\cinterop\cpp
+  command = "D:\Huawei\DevEco Studio\sdk\default\openharmony\native\build-tools\cmake\bin\cmake.exe" --regenerate-during-build -SD:\Third-party_Library\clone\compose-webview-multiplatform\webview\src\nativeInterop\cinterop\cpp -BD:\Third-party_Library\clone\compose-webview-multiplatform\webview\src\nativeInterop\cinterop\cpp
   description = Re-running CMake...
   generator = 1
 
