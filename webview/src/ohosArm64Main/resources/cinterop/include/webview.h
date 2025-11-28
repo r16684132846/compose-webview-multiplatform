@@ -36,7 +36,7 @@ typedef void (*OH_WebErrorCallback)(int32_t errorCode, const char *description,
  * @param manager 全局WebView管理器句柄（不可为NULL）
  * @return WebView实例句柄，失败返回NULL
  */
-OH_WebView *OH_WebView_Create(OH_Context *context, OH_WebViewManager *manager);
+OH_ArkWeb *OH_ArkWeb_Create(OH_Context *context, OH_WebViewManager *manager);
 
 /**
  * 销毁WebView实例
