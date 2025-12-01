@@ -46,28 +46,6 @@ kotlin {
 //        }
 //    }
 
-//        compilations.getByName("main") {
-//            cinterops {
-//                create("webview") {
-//                    definitionFile.set(file("src/nativeInterop/cinterop/webview.def"))
-//                    includeDirs("$projectDir/src/nativeInterop/cinterop/cpp")
-//                }
-//            }
-//        }
-//        binaries {
-//            all {
-//                linkerOpts(
-//                    "-lhilog_ndk.z",
-//                    "-lhwge_textfont.z",
-//                    "${System.getenv("OHOS_SDK_HOME") ?: ""}/native/llvm/lib/aarch64-linux-ohos/libunwind.a",
-//                    "-lwebview",
-//                    "-lability_runtime",
-//                    "-lwant"
-//                )
-//            }
-//        }
-//    }
-
     sourceSets {
         val coroutinesVersion = extra["coroutines.version"] as String
 
