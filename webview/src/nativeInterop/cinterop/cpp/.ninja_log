@@ -1,5 +1,5 @@
 # ninja log v6
-13	124	7860020405391323	CMakeFiles/webview_utils.dir/ohos_webview_utils.cpp.o	af60f59115755509
-130	1412	7860020406618374	libwebview_utils.a	d62f12b5ba09d13d
-4	134	7860031017521350	CMakeFiles/webview_utils.dir/ohos_webview_utils.cpp.o	af60f59115755509
 141	316	7860031018973079	libwebview_utils.a	d62f12b5ba09d13d
+1	127	7862634236682730	build.ninja	3301d5e92f728a93
+2	267	7862639704011110	CMakeFiles/webview_utils.dir/arkweb_wrapper.cpp.o	8c02c02c17b576f8
+273	1333	7862639706779252	libwebview_utils.a	eb0e88df28fce54e

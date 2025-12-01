@@ -36,13 +36,15 @@ kotlin {
     }*/
 
     // 添加OHOS支持
-    ohosArm64() {
-        val main by compilations.getting
-        val webview by main.cinterops.creating {
-            definitionFile.set(file("src/nativeInterop/cinterop/webview.def"))
-            includeDirs("$projectDir/src/nativeInterop/cinterop/cpp")
-        }
-    }
+    ohosArm64()
+//    {
+//        val main by compilations.getting
+//        val webview by main.cinterops.creating {
+//            definitionFile.set(file("src/nativeInterop/cinterop/webview.def"))
+//            includeDirs("$projectDir/src/nativeInterop/cinterop/cpp")
+//            includeDirs("${System.getenv("OHOS_SDK_HOME") ?: findProperty("ohos.sdk.home") ?: ""}/native/include")
+//        }
+//    }
 
 //        compilations.getByName("main") {
 //            cinterops {
@@ -137,8 +139,8 @@ android {
 }
 dependencies {
     implementation("com.google.firebase:protolite-well-known-types:18.0.1")
-    implementation("androidx.core:core-i18n:1.0.0")
-    implementation("androidx.compose.ui:ui-android:1.9.4")
+    implementation("androidx.core:core-i18n:1.0.0") // 可以尝试降级或移除
+    implementation("androidx.compose.ui:ui-android:1.6.7")
     implementation("androidx.compose.ui:ui-desktop:1.7.0")
 }
 // 配置发布

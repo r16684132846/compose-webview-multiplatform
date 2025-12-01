@@ -7,9 +7,18 @@ if (DEFINED PACKAGE_FIND_FILE)
     include(${PACKAGE_FIND_FILE})
 endif ()
 
+# 添加系统头文件路径
 include_directories(${NATIVERENDER_ROOT_PATH}
         ${NATIVERENDER_ROOT_PATH})
 
-add_library(webview_utils STATIC ohos_webview_utils.cpp)
-target_link_libraries(webview_utils PUBLIC libhilog_ndk.z.so)
-target_link_libraries(webview_utils PUBLIC libace_napi.z.so libohresmgr.so librawfile.z.so libhilog_ndk.z.so)
+# 添加我们的源文件到库中
+add_library(webview_utils STATIC
+        arkweb_wrapper.cpp)
+
+# 链接必要的系统库
+target_link_libraries(webview_utils PUBLIC
+        hilog_ndk.z
+        ace_napi.z
+        ohresmgr
+        rawfile.z
+        arkweb)
