@@ -63,12 +63,20 @@ actual fun ActualWebView(
             parameter = js {
                 "url"(currentUrl)
                 "enableJavaScript"(state.webSettings.isJavaScriptEnabled)
-                "javascriptEnabled"(state.webSettings.isJavaScriptEnabled)
-                "domStorageEnabled"(state.webSettings.androidWebSettings.domStorageEnabled)
+                "domStorageEnabled"(state.webSettings.ohosWebSettings.domStorageEnabled)
+                "allowFileAccess"(state.webSettings.ohosWebSettings.allowFileAccess)
+                "textZoom"(state.webSettings.ohosWebSettings.textZoom)
+                "useWideViewPort"(state.webSettings.ohosWebSettings.useWideViewPort)
+                "loadsImagesAutomatically"(state.webSettings.ohosWebSettings.loadsImagesAutomatically)
+                "safeBrowsingEnabled"(state.webSettings.ohosWebSettings.safeBrowsingEnabled)
+                "mediaPlaybackRequiresUserGesture"(state.webSettings.ohosWebSettings.mediaPlaybackRequiresUserGesture)
+                "supportZoom"(state.webSettings.ohosWebSettings.supportZoom)
+                "standardFontFamily"(state.webSettings.ohosWebSettings.standardFontFamily)
+                "defaultFontSize"(state.webSettings.ohosWebSettings.defaultFontSize)
                 state.webSettings.customUserAgentString?.let { userAgent ->
                     "userAgent"(userAgent)
                 }
-                "userAgent"("Mozilla/5.0 (OpenHarmony) AppleWebKit/537.36 (KHTML, like Gecko) Version/9.0 Mobile Safari/537.36")
+                    ?: "userAgent"("Mozilla/5.0 (OpenHarmony) AppleWebKit/537.36 (KHTML, like Gecko) Version/9.0 Mobile Safari/537.36")
                 "databaseEnabled"(true)
                 "cacheMode"("default")
                 if (additionalHttpHeaders.isNotEmpty()) {
@@ -79,10 +87,15 @@ actual fun ActualWebView(
                     "additionalHttpHeaders"(headersJson)
                 }
                 "visibility"(if (state.isLoading) "hidden" else "visible")
+                "mixedContentMode"(2)// 允许混合内容
+                "loadWithOverviewMode"(false)// 启用概览模式
+                "allowJavaScriptFromSources"(true)// 允许从JavaScript源加载内容
             },
             onCreate = { webViewInstance ->
                 ohosWebView?.initWebView()
-                KLogger.d { "OHOS WebView created" }
+                KLogger.d { "OHOS WebView created with URL: $currentUrl" }
+                KLogger.d { "JavaScript enabled: ${state.webSettings.isJavaScriptEnabled}" }
+                KLogger.d { "Additional headers: $additionalHttpHeaders" }
             },
             onRelease = { webViewInstance ->
                 KLogger.d { "OHOS WebView released" }
@@ -95,12 +108,14 @@ actual fun ActualWebView(
                     if (urlString != null) {
                         // 更新当前URL
                         currentUrl = urlString
+                        KLogger.d { "WebView URL updated to: $urlString" }
                     }
                 }
 
                 // 处理页面加载完成事件
                 params["onPageFinished"]?.let {
                     state.loadingState = LoadingState.Finished
+                    KLogger.d { "WebView page finished loading: $currentUrl" }
                 }
 
                 // 处理页面开始加载事件
@@ -108,18 +123,21 @@ actual fun ActualWebView(
                     // 如果有进度信息，可以在这里获取
                     val progressValue = params["progress"]?.asString()?.toFloatOrNull()
                     state.loadingState = LoadingState.Loading(progressValue ?: 0f)
+                    KLogger.d { "WebView page started loading: $currentUrl, progress: ${progressValue ?: 0f}" }
                 }
 
                 // 处理错误事件
                 params["onError"]?.let { errorValue ->
                     val errorMessage = errorValue.asString() ?: "Unknown error"
                     state.errorsForCurrentRequest.add(WebViewError(-1, errorMessage)) // 添加到错误列表
+                    KLogger.e { "WebView error occurred: $errorMessage" }
                 }
             },
             interactive = true,
             container = InteropContainer.BACK
         )
     }
+
 }
 
 

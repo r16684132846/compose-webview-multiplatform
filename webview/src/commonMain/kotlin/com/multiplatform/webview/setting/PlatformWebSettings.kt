@@ -231,4 +231,84 @@ sealed class PlatformWebSettings {
          */
         var showVerticalScrollIndicator: Boolean = true,
     ) : PlatformWebSettings()
+
+    /**
+     * Ohos web settings
+     */
+    data class OHOSWebSettings(
+        /**
+         * Enables or disables file access within WebView.
+         * Note that this enables or disables file system access only. Assets and resources
+         * are still accessible using file:///android_asset and file:///android_res.
+         * The default value is {@code false}.
+         */
+        var allowFileAccess: Boolean = false,
+
+        /**
+         * The text zoom of the page in percent. The default is 100.
+         *
+         * @param textZoom the text zoom in percent
+         */
+        var textZoom: Int = 100,
+
+        /**
+         * Whether the WebView should enable support for the &quot;viewport&quot;
+         * HTML meta tag or should use a wide viewport.
+         * When the value of the setting is {@code false}, the layout width is always set to the
+         * width of the WebView control in device-independent (CSS) pixels.
+         * When the value is {@code true} and the page contains the viewport meta tag, the value
+         * of the width specified in the tag is used. If the page does not contain the tag or
+         * does not provide a width, then a wide viewport will be used.
+         */
+        var useWideViewPort: Boolean = false,
+
+        /**
+         * Whether the DOM storage API is enabled. The default value is {@code false}.
+         */
+        var domStorageEnabled: Boolean = false,
+
+        /**
+         * Sets whether the WebView should load image resources. Note that this method
+         * controls loading of all images, including those embedded using the data
+         * URI scheme. Note that if the value of this setting is changed from {@code false}
+         * to {@code true}, all images resources referenced by content currently displayed
+         * by the WebView are loaded automatically.
+         * The default is {@code true}.
+         *
+         * @param flag whether the WebView should load image resources
+         */
+        var loadsImagesAutomatically: Boolean = true,
+
+        /**
+         * Whether Safe Browsing is enabled. Safe Browsing allows WebView to
+         * protect against malware and phishing attacks by verifying the links.
+         */
+        var safeBrowsingEnabled: Boolean = true,
+
+        /**
+         * Whether a user gesture is required to play media. The default is {@code true}.
+         */
+        var mediaPlaybackRequiresUserGesture: Boolean = true,
+
+        /**
+         * Whether the WebView should support zooming using its on-screen zoom
+         * controls and gestures. The default is {@code true}.
+         */
+        var supportZoom: Boolean = true,
+
+        /**
+         * The standard font family name. The default is "sans-serif".
+         *
+         * @param font a font family name
+         */
+        var standardFontFamily: String = "sans-serif",
+
+        /**
+         * The default font size. The default is 16.
+         *
+         * @param size a non-negative integer between 1 and 72. Any number outside
+         *             the specified range will be pinned.
+         */
+        var defaultFontSize: Int = 16,
+    ) : PlatformWebSettings()
 }

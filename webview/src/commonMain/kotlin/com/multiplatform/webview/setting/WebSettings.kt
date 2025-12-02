@@ -104,4 +104,9 @@ class WebSettings {
      * iOS platform specific settings
      */
     val iOSWebSettings = PlatformWebSettings.IOSWebSettings()
+
+    /**
+     * Ohos platform specific settings
+     */
+    val ohosWebSettings = PlatformWebSettings.OHOSWebSettings()
 }

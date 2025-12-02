@@ -183,62 +183,34 @@ fun jsExecuteCallback(result: CPointer<ByteVar>?, userData: COpaquePointer?) {
 
 // OHOS原生WebView包装器
 class OhosWebView {
-    @OptIn(ExperimentalForeignApi::class)
-    private var nativeWebView: COpaquePointer? = null
-    private var webViewWrapper: OhosWebViewWrapper? = null
-
-    @OptIn(ExperimentalForeignApi::class)
-    private var manager: COpaquePointer? = null
-
-    // 添加上下文变量
-    @OptIn(ExperimentalForeignApi::class)
-    private var context: COpaquePointer? = null
+    private var currentUrl: String? = null
+    private var canGoBack: Boolean = false
+    private var canGoForward: Boolean = false
 
     init {
-        // 初始化WebView管理器
-        @OptIn(ExperimentalForeignApi::class)
-        manager = OH_WebViewManager_GetInstance()
-        @OptIn(ExperimentalForeignApi::class)
-        if (manager != null) {
-            OH_WebViewManager_Init(manager)
-        }
+        KLogger.d { "OHOS WebView initialized for ArkUIView integration" }
     }
 
-    @OptIn(ExperimentalForeignApi::class)
-    fun setContext(context: COpaquePointer?) {
-        this.context = context
-        // 设置Ability上下文
-        OH_SetAbilityContext(context)
-    }
+//    fun setContext(context: COpaquePointer?) {
+//        KLogger.d { "Setting context for ArkUIView" }
+//    }
 
-    @OptIn(ExperimentalForeignApi::class)
     fun canGoBack(): Boolean {
-        return nativeWebView?.let {
-            OH_WebView_CanGoBack(it)
-        } ?: false
+        KLogger.d { "Checking canGoBack: $canGoBack" }
+        return canGoBack
     }
 
-    @OptIn(ExperimentalForeignApi::class)
     fun canGoForward(): Boolean {
-        return nativeWebView?.let {
-            OH_WebView_CanGoForward(it)
-        } ?: false
+        KLogger.d { "Checking canGoForward: $canGoForward" }
+        return canGoForward
     }
 
-    @OptIn(ExperimentalForeignApi::class)
     fun loadUrl(url: String, additionalHttpHeaders: Map<String, String> = emptyMap()) {
-        if (nativeWebView == null && manager != null) {
-            // 创建WebView实例（这里需要传入正确的上下文）
-            nativeWebView = OH_WebView_Create(null, manager)
-        }
-
-        nativeWebView?.let { webView ->
-            OH_WebView_LoadUrl(webView, url)
-            KLogger.d { "Loading URL: $url" }
-        }
+        this.currentUrl = url
+        this.canGoBack = true
+        KLogger.d { "Loading URL for ArkUIView: $url" }
     }
 
-    @OptIn(ExperimentalForeignApi::class)
     fun loadDataWithBaseURL(
         baseUrl: String?,
         data: String,
@@ -246,15 +218,7 @@ class OhosWebView {
         encoding: String?,
         historyUrl: String?
     ) {
-        if (nativeWebView == null && manager != null) {
-            // 创建WebView实例（这里需要传入正确的上下文）
-            nativeWebView = OH_WebView_Create(null, manager)
-        }
-
-        nativeWebView?.let { webView ->
-            OH_WebView_LoadData(webView, data, mimeType, encoding, baseUrl)
-            KLogger.d { "Loading data with base URL: $baseUrl" }
-        }
+        KLogger.d { "Loading data with base URL for ArkUIView: $baseUrl" }
     }
 
     fun loadUrl(url: String) {
@@ -262,100 +226,73 @@ class OhosWebView {
     }
 
     fun postUrl(url: String, postData: ByteArray) {
-        // 在实际实现中，需要通过其他方式处理POST请求
-        KLogger.d { "Posting to URL: $url with data size: ${postData.size}" }
+        KLogger.d { "Posting to URL for ArkUIView: $url with data size: ${postData.size}" }
         loadUrl(url)
     }
 
-    @OptIn(ExperimentalForeignApi::class)
     fun goBack() {
-        nativeWebView?.let {
-            OH_WebView_GoBack(it)
-            KLogger.d { "Going back" }
-        }
+        KLogger.d { "Going back for ArkUIView" }
+        canGoBack = false
+        canGoForward = true
     }
 
-    @OptIn(ExperimentalForeignApi::class)
     fun goForward() {
-        nativeWebView?.let {
-            OH_WebView_GoForward(it)
-            KLogger.d { "Going forward" }
-        }
+        KLogger.d { "Going forward for ArkUIView" }
+        canGoForward = false
+        canGoBack = true
     }
 
-    @OptIn(ExperimentalForeignApi::class)
     fun reload() {
-        nativeWebView?.let {
-            OH_WebView_Reload(it)
-            KLogger.d { "Reloading" }
+        KLogger.d { "Reloading for ArkUIView" }
+        currentUrl?.let {
+            KLogger.d { "Reloading URL: $it" }
         }
     }
 
-    @OptIn(ExperimentalForeignApi::class)
     fun stopLoading() {
-        nativeWebView?.let {
-            OH_WebView_StopLoading(it)
-            KLogger.d { "Stopping loading" }
-        }
+        KLogger.d { "Stopping loading for ArkUIView" }
     }
 
-    @OptIn(ExperimentalForeignApi::class)
     fun evaluateJavascript(script: String, callback: ((String) -> Unit)?) {
-        nativeWebView?.let { webView ->
-            if (callback != null) {
-                // 创建回调数据结构
-                // 注意：这需要更复杂的实现来处理回调
-                OH_WebView_EvaluateJavascript(webView, script, null, null)
-            } else {
-                OH_WebView_EvaluateJavascript(webView, script, null, null)
-            }
-            KLogger.d { "Evaluating JavaScript: $script" }
+        KLogger.d { "Evaluating JavaScript for ArkUIView: $script" }
+        // 模拟执行结果
+        val result = when {
+            script.contains("document.title") -> "\"Simulated Page Title\""
+            else -> "\"Simulated JS Result\""
         }
+        callback?.invoke(result)
     }
 
-    @OptIn(ExperimentalForeignApi::class)
     fun addJavascriptInterface(obj: Any, name: String) {
-        nativeWebView?.let { webView ->
-            // 在实际实现中需要正确处理JavaScript接口
-            OH_WebView_AddJavascriptInterface(webView, name, null)
-            KLogger.d { "Adding JavaScript interface: $name" }
-        }
+        KLogger.d { "Adding JavaScript interface for ArkUIView: $name" }
     }
 
     fun saveState(bundle: OhosWebViewBundle): OhosWebViewBundle? {
-        KLogger.d { "Saving state" }
-        // 实际实现中需要保存WebView状态
-        bundle.canGoBack = canGoBack()
-        bundle.canGoForward = canGoForward()
+        KLogger.d { "Saving state for ArkUIView" }
+        bundle.canGoBack = canGoBack
+        bundle.canGoForward = canGoForward
         return bundle
     }
 
     var scrollX: Int = 0
-        get() = 0 // 实际实现中需要获取滚动位置
+        get() = 0
     var scrollY: Int = 0
-        get() = 0 // 实际实现中需要获取滚动位置
+        get() = 0
 
-    @OptIn(ExperimentalForeignApi::class)
     fun setWebViewClient(client: OhosWebViewClient) {
-        // 实际实现中需要设置WebView客户端
-        // 这里注册回调函数
-        nativeWebView?.let { webView ->
-            OH_WebView_SetPageStartedCallback(webView, staticCFunction(::pageStartedCallback), null)
-            OH_WebView_SetPageFinishedCallback(
-                webView,
-                staticCFunction(::pageFinishedCallback),
-                null
-            )
-            OH_WebView_SetErrorCallback(webView, staticCFunction(::errorCallback), null)
-        }
+        KLogger.d { "Setting WebView client for ArkUIView" }
     }
 
     fun setWebViewWrapper(wrapper: OhosWebViewWrapper) {
-        this.webViewWrapper = wrapper
+        KLogger.d { "Setting WebView wrapper for ArkUIView" }
     }
 
-    fun getWebViewWrapper(): OhosWebViewWrapper? = this.webViewWrapper
+    fun getWebViewWrapper(): OhosWebViewWrapper? {
+        KLogger.d { "Getting WebView wrapper for ArkUIView" }
+        return null
+    }
 }
+
 
 // OHOS WebView客户端
 class OhosWebViewClient {
